@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const path = require("path");
 const { v4: uuid } = require("uuid");
-const timeout = require("connect-timeout"); // Import connect-timeout middleware
 
 const User = require("../models/userModel");
 const HttpError = require("../models/errorModel");
