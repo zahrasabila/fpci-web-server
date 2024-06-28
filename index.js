@@ -13,7 +13,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://fpci-blog-app.frontend.vercel.app"],
+    origin: ["https://fpci-web-client.vercel.app"],
     methods: ["POST", "GET", "DELETE", "PATCH"],
     credentials: true,
   })
