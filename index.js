@@ -15,10 +15,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000",
-    // origin: ["https://fpci-web-client.vercel.app"],
-    // methods: ["POST", "GET", "DELETE", "PATCH"],
-    // credentials: true,
+    // origin: "http://localhost:3000",
+    origin: ["https://fpci-web-client.vercel.app"],
+    methods: ["POST", "GET", "DELETE", "PATCH"],
+    credentials: true,
   })
 );
 app.use(upload());
