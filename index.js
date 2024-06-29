@@ -10,7 +10,8 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const app = express();
 
 // Configure CORS to allow multiple origins
-
+app.use(express.json({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     credentials: true,
@@ -20,7 +21,6 @@ app.use(
     // credentials: true,
   })
 );
-app.use(express.urlencoded({ extended: true }));
 app.use(upload());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
