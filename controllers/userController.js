@@ -63,49 +63,6 @@ const getUser = async (req, res, next) => {
 // =====================LOGIN A REGISTERED USER
 // POST : api/users/login
 // UNPROTECTED
-// const timeoutDuration = "10s";
-// const loginUser = async (req, res, next) => {
-//   try {
-//     const { email, password } = req.body;
-//     // if (!email || !password) {
-//     //   return next(new HttpError("Please fill in all fields", 422));
-//     // }
-//     const newEmail = email.toLowerCase();
-
-//     const user = await User.findOne({ email: newEmail });
-
-//     if (!user) {
-//       return next(new HttpError("Invalid credentials", 422));
-//     }
-
-//     const comparePassword = await bcrypt.compare(password, user.password);
-//     if (!comparePassword) {
-//       return next(new HttpError("Invalid credentials", 422));
-//     }
-
-//     const { _id: id, name } = user;
-//     const token = jwt.sign({ id, name }, process.env.JWT_SECRET, {
-//       expiresIn: "1d",
-//     });
-
-//     res.status(200).json({ token, id, name });
-//   } catch (error) {
-//     return next(new HttpError("User login failed", 422));
-//   }
-// };
-
-// // Apply timeout middleware before your route handler
-// const timeoutMiddleware = timeout(timeoutDuration);
-// const loginUserWithTimeout = (req, res, next) => {
-//   timeoutMiddleware(req, res, next);
-// };
-
-// // Error handler for timeout errors
-// const handleTimeoutError = (req, res, next) => {
-//   if (!req.timedout) next(); // Forward to next middleware if not timed out
-//   else res.status(504).send("Request timeout"); // Return 504 status for timeout
-// };
-
 const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -149,7 +106,7 @@ const changeAvatar = async (req, res, next) => {
     const user = await User.findById(req.user.id);
     //delete old image
     if (user.avatar) {
-      fs.unlink(path.join(__dirname, "..", "tmp", user.avatar), (err) => {
+      fs.unlink(path.join(__dirname, "..", "uploads", user.avatar), (err) => {
         if (err) {
           return next(new HttpError(err));
         }
@@ -172,21 +129,24 @@ const changeAvatar = async (req, res, next) => {
       uuid() +
       "." +
       splittedFilename[splittedFilename.length - 1];
-    avatar.mv(path.join(__dirname, "..", "tmp", newFilename), async (err) => {
-      if (err) {
-        return next(new HttpError(err));
-      }
+    avatar.mv(
+      path.join(__dirname, "..", "uploads", newFilename),
+      async (err) => {
+        if (err) {
+          return next(new HttpError(err));
+        }
 
-      const updatedAvatar = await User.findByIdAndUpdate(
-        req.user.id,
-        { avatar: newFilename },
-        { new: true }
-      );
-      if (!updatedAvatar) {
-        return next(new HttpError("Avatar couldn't be changed", 422));
+        const updatedAvatar = await User.findByIdAndUpdate(
+          req.user.id,
+          { avatar: newFilename },
+          { new: true }
+        );
+        if (!updatedAvatar) {
+          return next(new HttpError("Avatar couldn't be changed", 422));
+        }
+        res.status(200).json(updatedAvatar);
       }
-      res.status(200).json(updatedAvatar);
-    });
+    );
   } catch (error) {
     return next(new HttpError(error));
   }
